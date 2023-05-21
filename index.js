@@ -26,10 +26,27 @@ async function run() {
     await client.connect();
 
     const allData = client.db("allToysZone").collection("toysData");
+    const toyCollection = client.db("toys").collection("allToy");
 
     app.get("/toysData", async (req, res) => {
-      const cursor = allData.find();
+      const cursor = allData.find().limit(20);
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // body.createdAt = new Date();
+
+    // const result = await toyCollection.insertOne(body);
+    // console.log(result);
+
+    app.post("/addToy", async (req, res) => {
+      const body = req.body;
+      const result = await toyCollection.insertOne(body);
+      console.log(result);
+      res.send(result);
+    });
+    app.get("/allToys", async (req, res) => {
+      const result = await toyCollection.find({}).toArray();
       res.send(result);
     });
 
