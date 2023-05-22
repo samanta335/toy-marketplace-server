@@ -29,24 +29,33 @@ async function run() {
     const toyCollection = client.db("toys").collection("allToy");
 
     app.get("/toysData", async (req, res) => {
-      const cursor = allData.find().limit(20);
+      const cursor = allData.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
     // body.createdAt = new Date();
 
-    // const result = await toyCollection.insertOne(body);
-    // console.log(result);
-
     app.post("/addToy", async (req, res) => {
       const body = req.body;
+      // body.createdAt = new price();
       const result = await toyCollection.insertOne(body);
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
     app.get("/allToys", async (req, res) => {
-      const result = await toyCollection.find({}).toArray();
+      const result = await toyCollection
+        .find({})
+        .limit(20)
+        .sort({ createdAt: -1 })
+        .toArray();
+      res.send(result);
+    });
+    app.get("/toys/:email", async (req, res) => {
+      // console.log(req.params.name);
+      const result = await toyCollection
+        .find({ postedBy: req.params.email })
+        .toArray();
       res.send(result);
     });
 
